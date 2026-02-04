@@ -7,6 +7,7 @@
     'sequence': 1,
     'depends': [
         'sale_crm',
+        'crm',
     ],
     'data': [
         # 'security/ir.model.access.csv',
