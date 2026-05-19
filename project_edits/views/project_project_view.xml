@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_project_form_inherit_custom" model="ir.ui.view">
+            <field name="name">project.project.form.inherit.custom</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+
+                    <field name="partner_id"/>
+                    <field name="analytic_account_id"/>
+                    <field name="analytic_distribution" widget="analytic_distribution" invisible="1"/>
+
+                </xpath>
+
+
+                <xpath expr="//field[@name='tag_ids']" position="after">
+
+                    <field name="estimated_cost"/>
+
+                    <field name="member_ids"
+                           widget="many2many_tags"/>
+
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>
