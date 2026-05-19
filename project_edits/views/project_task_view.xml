@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- TASK FORM VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_task_form_inherit_custom_fields" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.custom.fields</field>
+
+        <field name="model">project.task</field>
+
+        <field name="inherit_id" ref="project.view_task_form2"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="partner_id"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_ids']"
+                   position="after">
+
+                <field name="task_type"/>
+
+                <field name="department"/>
+
+                <field name="story_points"/>
+
+                <field name="definition_of_done"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- TASK list VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_task_list_inherit_custom_fields" model="ir.ui.view">
+        <field name="name">project.task.list.inherit.custom.fields</field>
+
+        <field name="model">project.task</field>
+
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//list"
+                   position="inside">
+
+                <field name="task_type"/>
+
+                <field name="department"/>
+
+                <field name="story_points"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
