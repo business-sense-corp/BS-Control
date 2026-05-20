@@ -16,6 +16,10 @@ class ProjectProject(models.Model):
         string='Analytic Distribution',
         copy=False,
     )
+    analytic_precision = fields.Integer(
+        string='Analytic Precision',
+        default=2,
+    )
 
     @api.onchange('analytic_account_id')
     def _onchange_analytic_account_id(self):
