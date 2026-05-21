@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Inherit Project Form View -->
+  <record id="view_project_project_form_inherit_bs_control" model="ir.ui.view">
+    <field name="name">project.project.form.inherit.bs.control</field>
+    <field name="model">project.project</field>
+    <field name="inherit_id" ref="project.edit_project" />
+    <field name="arch" type="xml">
+
+      <xpath expr="//sheet/notebook" position="inside">
+        <page string="BS Control Project Info" name="bs_control_project_info">
+          <group>
+            <group string="Planning Dates">
+              <field name="x_planned_start_date" />
+              <field name="x_planned_end_date" />
+              <field name="x_actual_start_date" />
+              <field name="x_actual_end_date" />
+            </group>
+
+            <group string="Project Control">
+              <field name="x_project_status" />
+              <field name="x_project_priority" />
+              <field name="x_completion_percentage" />
+            </group>
+
+            <group string="Hours">
+              <field name="x_estimated_hours" />
+              <field name="x_actual_hours" />
+            </group>
+
+            <group string="Cost">
+              <field name="x_estimated_cost" />
+              <field name="x_actual_cost" />
+            </group>
+          </group>
+        </page>
+      </xpath>
+
+    </field>
+  </record>
+
+
+  <!-- Inherit Project Search View -->
+  <record id="view_project_project_filter_inherit_bs_control" model="ir.ui.view">
+    <field name="name">project.project.search.inherit.bs.control</field>
+    <field name="model">project.project</field>
+    <field name="inherit_id" ref="project.view_project_project_filter" />
+    <field name="arch" type="xml">
+
+      <xpath expr="//search" position="inside">
+
+        <separator />
+
+        <!-- Searchable Fields -->
+        <field name="x_project_status" string="Project Status" />
+        <field name="x_project_priority" string="Project Priority" />
+        <field name="partner_id" string="Customer" />
+        <field name="user_id" string="Project Manager" />
+
+        <separator />
+
+        <!-- Filters -->
+        <filter
+          string="Project Status"
+          name="filter_has_project_status"
+          domain="[('x_project_status', '!=', False)]"
+        />
+
+        <filter
+          string="Project Priority"
+          name="filter_has_project_priority"
+          domain="[('x_project_priority', '!=', False)]"
+        />
+
+        <filter
+          string="Customer"
+          name="filter_has_customer"
+          domain="[('partner_id', '!=', False)]"
+        />
+
+        <filter
+          string="Project Manager"
+          name="filter_has_project_manager"
+          domain="[('user_id', '!=', False)]"
+        />
+
+        <separator />
+
+        <!-- Group By -->
+        <filter
+          string="Project Status"
+          name="group_by_x_project_status"
+          context="{'group_by': 'x_project_status'}"
+        />
+
+        <filter
+          string="Project Priority"
+          name="group_by_x_project_priority"
+          context="{'group_by': 'x_project_priority'}"
+        />
+
+        <filter
+          string="Customer"
+          name="group_by_partner_id"
+          context="{'group_by': 'partner_id'}"
+        />
+
+        <filter
+          string="Project Manager"
+          name="group_by_user_id"
+          context="{'group_by': 'user_id'}"
+        />
+
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

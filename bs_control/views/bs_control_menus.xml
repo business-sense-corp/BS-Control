@@ -14,6 +14,19 @@
   </record>
 
 
+  <!-- Action: Open Projects -->
+  <record id="action_bs_control_projects" model="ir.actions.act_window">
+    <field name="name">Projects</field>
+    <field name="res_model">project.project</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Create your first BS Control project
+      </p>
+    </field>
+  </record>
+
+
   <!-- Root App Menu -->
   <menuitem
     id="menu_bs_control_root"
@@ -32,6 +45,17 @@
     parent="menu_bs_control_root"
     action="action_bs_control_clients"
     sequence="10"
+    groups="base.group_user"
+  />
+
+
+  <!-- Projects Menu -->
+  <menuitem
+    id="menu_bs_control_projects"
+    name="Projects"
+    parent="menu_bs_control_root"
+    action="action_bs_control_projects"
+    sequence="20"
     groups="base.group_user"
   />
 
