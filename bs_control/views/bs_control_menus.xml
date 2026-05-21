@@ -59,4 +59,52 @@
     groups="base.group_user"
   />
 
+   <!-- Dashboard -->
+    <menuitem
+            id="menu_bs_control_dashboard"
+            name="Dashboard"
+            parent="menu_bs_control_root"
+            sequence="5"
+    />
+
+    <!-- Backlog -->
+    <menuitem
+            id="menu_bs_control_backlog"
+            name="Backlog"
+            parent="menu_bs_control_root"
+            action="action_bs_backlog"
+            sequence="30"
+    />
+
+    <!-- Configuration -->
+    <menuitem
+            id="menu_bs_control_configuration"
+            name="Configuration"
+            parent="menu_bs_control_root"
+            sequence="100"
+    />
+
+    <!-- Config Menus -->
+    <menuitem
+            id="menu_bs_control_task_types"
+            name="Task Types"
+            parent="menu_bs_control_configuration"
+            sequence="10"
+    />
+
+    <menuitem
+            id="menu_bs_control_statuses"
+            name="Statuses"
+            parent="menu_bs_control_configuration"
+            sequence="20"
+    />
+
+    <menuitem
+            id="menu_bs_control_priorities"
+            name="Priorities"
+            parent="menu_bs_control_configuration"
+            sequence="30"
+    />
+
+
 </odoo>

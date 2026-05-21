@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- LIST VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_bs_backlog_item_list" model="ir.ui.view">
+        <field name="name">bs.backlog.item.list</field>
+        <field name="model">bs.backlog.item</field>
+
+        <field name="arch" type="xml">
+            <list>
+
+                <field name="name"/>
+
+                <field name="task_type"/>
+
+                <field name="partner_id"/>
+
+                <field name="project_id"/>
+
+                <field name="assigned_user_id"/>
+
+                <field name="priority"/>
+
+                <field name="estimated_hours"/>
+
+                <field name="status"/>
+
+                <field name="lifecycle_state"/>
+
+                <field name="due_date"/>
+
+                <field name="department_id"/>
+
+                <field name="is_billable"/>
+
+            </list>
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- FORM VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_bs_backlog_item_form" model="ir.ui.view">
+        <field name="name">bs.backlog.item.form</field>
+        <field name="model">bs.backlog.item</field>
+
+        <field name="arch" type="xml">
+            <form>
+
+                <sheet>
+
+                    <!-- BASIC INFO -->
+                    <group string="Basic Information">
+
+                        <group>
+                            <field name="name"/>
+                            <field name="task_type"/>
+                            <field name="priority"/>
+                        </group>
+
+                        <group>
+                            <field name="status"/>
+                            <field name="lifecycle_state"/>
+                        </group>
+
+                    </group>
+
+
+                    <!-- RELATIONS -->
+                    <group string="Relations">
+
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="project_id"/>
+                        </group>
+
+                        <group>
+                            <field name="assigned_user_id"/>
+                            <field name="department_id"/>
+                        </group>
+
+                    </group>
+
+
+                    <!-- PLANNING -->
+                    <group string="Planning">
+
+                        <group>
+                            <field name="estimated_hours"/>
+                            <field name="story_points"/>
+                        </group>
+
+                        <group>
+                            <field name="due_date"/>
+                            <field name="is_billable"/>
+                        </group>
+
+                    </group>
+
+
+                    <!-- DESCRIPTION -->
+                    <group string="Description">
+
+                        <field name="description"/>
+
+                        <field name="definition_of_done"/>
+
+                    </group>
+
+
+                    <!-- SYSTEM INFO -->
+                    <group string="System Information">
+
+                        <group>
+                            <field name="created_by" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="created_date" readonly="1"/>
+                        </group>
+
+                    </group>
+
+                </sheet>
+
+                <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- SEARCH VIEW -->
+    <!-- ===================================================== -->
+    <record id="view_bs_backlog_item_search" model="ir.ui.view">
+        <field name="name">bs.backlog.item.search</field>
+        <field name="model">bs.backlog.item</field>
+        <field name="arch" type="xml">
+
+            <search>
+
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <field name="assigned_user_id"/>
+
+                <filter name="my_tasks"
+                        string="My Tasks"
+                        domain="[('assigned_user_id', '=', uid)]"/>
+
+                <filter name="unassigned"
+                        string="Unassigned Tasks"
+                        domain="[('assigned_user_id', '=', False)]"/>
+
+                <separator/>
+
+                <filter name="no_project"
+                        string="No Project"
+                        domain="[('project_id', '=', False)]"/>
+
+                <filter name="has_project"
+                        string="Has Project"
+                        domain="[('project_id', '!=', False)]"/>
+
+                <separator/>
+
+                <filter name="billable"
+                        string="Billable"
+                        domain="[('is_billable', '=', True)]"/>
+
+                <filter name="non_billable"
+                        string="Non-Billable"
+                        domain="[('is_billable', '=', False)]"/>
+
+                <separator/>
+
+                <filter name="todo"
+                        string="To Do"
+                        domain="[('status', '=', 'todo')]"/>
+
+                <filter name="progress"
+                        string="In Progress"
+                        domain="[('status', '=', 'in_progress')]"/>
+
+                <filter name="blocked"
+                        string="Blocked"
+                        domain="[('status', '=', 'blocked')]"/>
+
+                <filter name="done"
+                        string="Done"
+                        domain="[('status', '=', 'done')]"/>
+
+                <separator/>
+
+                <filter name="backlog"
+                        string="Backlog"
+                        domain="[('lifecycle_state', '=', 'backlog')]"/>
+
+                <filter name="planned"
+                        string="Planned"
+                        domain="[('lifecycle_state', '=', 'planned')]"/>
+
+                <filter name="active_sprint"
+                        string="Active Sprint"
+                        domain="[('lifecycle_state', '=', 'active_sprint')]"/>
+
+                <!-- Group by -->
+                <group name="group_filters">
+
+                    <filter name="group_by_task_type"
+                            string="Task Type"
+                            context="{'group_by': 'task_type'}"/>
+
+                    <filter name="group_by_customer"
+                            string="Customer"
+                            context="{'group_by': 'partner_id'}"/>
+
+                    <filter name="group_by_project"
+                            string="Project"
+                            context="{'group_by': 'project_id'}"/>
+
+                    <filter name="group_by_user"
+                            string="Assigned User"
+                            context="{'group_by': 'assigned_user_id'}"/>
+
+                    <filter name="group_by_priority"
+                            string="Priority"
+                            context="{'group_by': 'priority'}"/>
+
+                    <filter name="group_by_status"
+                            string="Status"
+                            context="{'group_by': 'status'}"/>
+
+                    <filter name="group_by_lifecycle"
+                            string="Lifecycle State"
+                            context="{'group_by': 'lifecycle_state'}"/>
+
+                    <filter name="group_by_department"
+                            string="Department"
+                            context="{'group_by': 'department_id'}"/>
+
+                    <filter name="group_by_billable"
+                            string="Billable"
+                            context="{'group_by': 'is_billable'}"/>
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+    <!-- ===================================================== -->
+    <!-- KANBAN VIEW -->
+    <!-- ===================================================== -->
+
+<!--    <record id="view_bs_backlog_item_kanban" model="ir.ui.view">-->
+
+<!--        <field name="name">bs.backlog.item.kanban</field>-->
+
+<!--        <field name="model">bs.backlog.item</field>-->
+
+<!--        <field name="arch" type="xml">-->
+
+<!--            <kanban default_group_by="status">-->
+
+<!--                <field name="name"/>-->
+<!--                <field name="partner_id"/>-->
+<!--                <field name="project_id"/>-->
+<!--                <field name="assigned_user_id"/>-->
+<!--                <field name="priority"/>-->
+<!--                <field name="estimated_hours"/>-->
+<!--                <field name="due_date"/>-->
+
+<!--                <templates>-->
+
+<!--                    <t t-name="card">-->
+
+<!--                        <div class="oe_kanban_card p-3">-->
+
+<!--                            <strong>-->
+<!--                                <field name="name"/>-->
+<!--                            </strong>-->
+
+<!--                            <div class="mt-2">-->
+<!--                                <field name="partner_id"/>-->
+<!--                            </div>-->
+
+<!--                            <div>-->
+<!--                                <field name="project_id"/>-->
+<!--                            </div>-->
+
+<!--                            <div>-->
+<!--                                <field name="assigned_user_id"/>-->
+<!--                            </div>-->
+
+<!--                            <div>-->
+<!--                                <field name="priority"/>-->
+<!--                            </div>-->
+
+<!--                            <div>-->
+<!--                                ⏱-->
+<!--                                <field name="estimated_hours"/>-->
+<!--                            </div>-->
+
+<!--                            <div>-->
+<!--                                📅-->
+<!--                                <field name="due_date"/>-->
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                    </t>-->
+
+<!--                </templates>-->
+
+<!--            </kanban>-->
+
+<!--        </field>-->
+
+<!--    </record>-->
+
+
+<record id="view_bs_backlog_item_kanban" model="ir.ui.view">
+    <field name="name">bs.backlog.item.kanban</field>
+    <field name="model">bs.backlog.item</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="status" group_create="false" group_delete="false">
+            <field name="name"/>
+            <field name="partner_id"/>
+            <field name="project_id"/>
+            <field name="assigned_user_id"/>
+            <field name="priority"/>
+            <field name="estimated_hours"/>
+            <field name="due_date"/>
+            <field name="status"/>
+
+            <templates>
+                <t t-name="card">
+
+                    <!-- Task Name -->
+                    <div class="fw-bold fs-6 mb-2">
+                        <field name="name"/>
+                    </div>
+
+                    <!-- Customer -->
+                    <div t-if="record.partner_id.raw_value"
+                         class="d-flex align-items-center gap-1 text-muted small mb-1">
+                        <i class="fa fa-building-o" aria-hidden="true"/>
+                        <field name="partner_id"/>
+                    </div>
+
+                    <!-- Project -->
+                    <div t-if="record.project_id.raw_value"
+                         class="d-flex align-items-center gap-1 text-muted small mb-1">
+                        <i class="fa fa-folder-o" aria-hidden="true"/>
+                        <field name="project_id"/>
+                    </div>
+
+                    <!-- Priority -->
+                    <div class="d-flex align-items-center gap-1 text-muted small mb-1">
+                        <i class="fa fa-flag-o" aria-hidden="true"/>
+                        <field name="priority"/>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
+
+                        <!-- Assigned User -->
+                        <div t-if="record.assigned_user_id.raw_value">
+                            <field name="assigned_user_id"
+                                   widget="many2one_avatar_user"
+                                   readonly="1"/>
+                        </div>
+                        <span t-else="" class="text-muted small">
+                            <i class="fa fa-user-o"/> Unassigned
+                        </span>
+
+                        <!-- Estimated Hours + Due Date -->
+                        <div class="d-flex align-items-center gap-2 text-muted small">
+                            <span t-if="record.estimated_hours.raw_value">
+                                <i class="fa fa-clock-o"/>
+                                <field name="estimated_hours"/>h
+                            </span>
+                            <span t-if="record.due_date.raw_value">
+                                <i class="fa fa-calendar"/>
+                                <field name="due_date"/>
+                            </span>
+                        </div>
+
+                    </div>
+
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+    <!-- ===================================================== -->
+    <!-- ACTION -->
+    <!-- ===================================================== -->
+
+    <record id="action_bs_backlog" model="ir.actions.act_window">
+        <field name="name">Backlog</field>
+
+        <field name="res_model">bs.backlog.item</field>
+
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+</odoo>

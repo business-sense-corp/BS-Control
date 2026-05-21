@@ -11,10 +11,13 @@
     "depends": [
         "contacts",
         "project",
+        "hr",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "views/res_partner_views.xml",
         "views/project_project_views.xml",
+        "views/backolg_item_views.xml",
         "views/bs_control_menus.xml",
     ],
     "application": True,
