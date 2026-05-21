@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Action: Open Clients -->
+  <record id="action_bs_control_clients" model="ir.actions.act_window">
+    <field name="name">Clients</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Create your first BS Control client
+      </p>
+    </field>
+  </record>
+
+
+  <!-- Root App Menu -->
+  <menuitem
+    id="menu_bs_control_root"
+    name="BS Control"
+    sequence="10"
+    action="action_bs_control_clients"
+    web_icon="bs_control,static/description/icon.png"
+    groups="base.group_user"
+  />
+
+
+  <!-- Clients Menu -->
+  <menuitem
+    id="menu_bs_control_clients"
+    name="Clients"
+    parent="menu_bs_control_root"
+    action="action_bs_control_clients"
+    sequence="10"
+    groups="base.group_user"
+  />
+
+</odoo>
