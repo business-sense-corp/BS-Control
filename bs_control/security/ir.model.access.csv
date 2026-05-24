@@ -1,2 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_bs_backlog_item,access.bs.backlog.item,model_bs_backlog_item,,1,1,1,1
+access_bs_sprint_user,access.bs.sprint.user,model_bs_sprint,base.group_user,1,1,1,1
+access_bs_sprint_item_user,access.bs.sprint.item.user,model_bs_sprint_item,base.group_user,1,1,1,1
+access_bs_move_backlog_to_sprint_wizard,access.bs.move.backlog.to.sprint.wizard,model_bs_move_backlog_to_sprint_wizard,base.group_user,1,1,1,1
+access_bs_work_session_user,access.bs.work.session.user,model_bs_work_session,base.group_user,1,1,1,1

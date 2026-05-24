@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Work Session List View -->
+  <record id="view_bs_work_session_list" model="ir.ui.view">
+    <field name="name">bs.work.session.list</field>
+    <field name="model">bs.work.session</field>
+    <field name="arch" type="xml">
+      <list string="Work Sessions">
+        <field name="sprint_item_id" />
+        <field name="sprint_id" />
+        <field name="project_id" />
+        <field name="user_id" />
+        <field name="start_datetime" />
+        <field name="end_datetime" />
+        <field name="duration_hours" />
+        <field name="state" />
+      </list>
+    </field>
+  </record>
+
+  <!-- Work Session Form View -->
+  <record id="view_bs_work_session_form" model="ir.ui.view">
+    <field name="name">bs.work.session.form</field>
+    <field name="model">bs.work.session</field>
+    <field name="arch" type="xml">
+      <form string="Work Session">
+        <sheet>
+          <group>
+            <group>
+              <field name="sprint_item_id" />
+              <field name="sprint_id" />
+              <field name="project_id" />
+              <field name="user_id" />
+            </group>
+
+            <group>
+              <field name="start_datetime" />
+              <field name="end_datetime" />
+              <field name="duration_hours" />
+              <field name="state" />
+            </group>
+          </group>
+
+          <group string="Notes">
+            <field name="notes" />
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Work Session Search View -->
+  <record id="view_bs_work_session_search" model="ir.ui.view">
+    <field name="name">bs.work.session.search</field>
+    <field name="model">bs.work.session</field>
+    <field name="arch" type="xml">
+      <search string="Search Work Sessions">
+        <field name="sprint_item_id" />
+        <field name="sprint_id" />
+        <field name="project_id" />
+        <field name="user_id" />
+        <field name="state" />
+
+        <filter name="my_sessions"
+          string="My Sessions"
+          domain="[('user_id', '=', uid)]" />
+
+        <filter name="running"
+          string="Running"
+          domain="[('state', '=', 'running')]" />
+
+        <filter name="done"
+          string="Done"
+          domain="[('state', '=', 'done')]" />
+
+        <separator />
+
+        <filter name="group_by_user"
+          string="User"
+          context="{'group_by': 'user_id'}" />
+
+        <filter name="group_by_sprint"
+          string="Sprint"
+          context="{'group_by': 'sprint_id'}" />
+
+        <filter name="group_by_project"
+          string="Project"
+          context="{'group_by': 'project_id'}" />
+
+        <filter name="group_by_state"
+          string="State"
+          context="{'group_by': 'state'}" />
+      </search>
+    </field>
+  </record>
+
+  <!-- Work Sessions Action -->
+  <record id="action_bs_work_session" model="ir.actions.act_window">
+    <field name="name">Work Sessions</field>
+    <field name="res_model">bs.work.session</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_bs_work_session_search" />
+  </record>
+
+  <!-- Work Sessions Menu -->
+  <menuitem id="menu_bs_work_session"
+    name="Work Sessions"
+    parent="menu_bs_sprint_management"
+    action="action_bs_work_session"
+    sequence="50" />
+
+</odoo>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Sprint Item List View -->
+  <record id="view_bs_sprint_item_list" model="ir.ui.view">
+    <field name="name">bs.sprint.item.list</field>
+    <field name="model">bs.sprint.item</field>
+    <field name="arch" type="xml">
+      <list string="Sprint Items">
+        <field name="name" />
+        <field name="sprint_id" />
+        <field name="backlog_item_id" />
+        <field name="project_id" />
+        <field name="assigned_user_id" />
+        <field name="estimated_hours" />
+        <field name="actual_hours" />
+        <field name="remaining_hours" />
+        <field name="status" />
+        <field name="priority" />
+        <field name="end_date" />
+        <field name="reopen_count" />
+        <field name="completion_percentage" />
+      </list>
+    </field>
+  </record>
+
+  <!-- Sprint Item Form View -->
+  <record id="view_bs_sprint_item_form" model="ir.ui.view">
+    <field name="name">bs.sprint.item.form</field>
+    <field name="model">bs.sprint.item</field>
+    <field name="arch" type="xml">
+      <form string="Sprint Item">
+
+        <header>
+          <button name="action_start_work"
+            type="object"
+            string="Start Work"
+            class="btn-primary"
+            invisible="not can_start_work" />
+
+          <button name="action_pause_work"
+            type="object"
+            string="Pause"
+            class="btn-secondary"
+            invisible="not is_work_running" />
+
+          <button name="action_resume_work"
+            type="object"
+            string="Resume"
+            class="btn-primary"
+            invisible="not can_resume_work" />
+
+          <button name="action_stop_work"
+            type="object"
+            string="Stop Work"
+            class="btn-secondary"
+            invisible="not is_work_running" />
+
+          <button name="action_send_to_review"
+            type="object"
+            string="Send To Review"
+            class="btn-secondary"
+            invisible="status not in ['in_progress', 'reopened']" />
+
+          <button name="action_mark_done"
+            type="object"
+            string="Mark Done"
+            class="btn-primary"
+            invisible="status not in ['review', 'in_progress']" />
+
+          <button name="action_block"
+            type="object"
+            string="Block"
+            class="btn-secondary"
+            invisible="status in ['blocked', 'done']" />
+
+          <button name="action_reopen"
+            type="object"
+            string="Reopen"
+            class="btn-secondary"
+            invisible="status not in ['done', 'blocked']" />
+
+          <field name="status"
+            widget="statusbar"
+            statusbar_visible="todo,in_progress,review,blocked,done,reopened" />
+        </header>
+
+        <sheet>
+
+          <field name="is_work_running" invisible="1" />
+          <field name="can_start_work" invisible="1" />
+          <field name="can_resume_work" invisible="1" />
+
+          <group>
+            <group>
+              <field name="name" />
+              <field name="sprint_id" />
+              <field name="backlog_item_id" />
+              <field name="project_id" />
+              <field name="assigned_user_id" />
+            </group>
+
+            <group>
+              <field name="priority" />
+              <field name="start_date" />
+              <field name="end_date" />
+              <field name="reopen_count" readonly="1" />
+            </group>
+          </group>
+
+          <group string="Hours">
+            <group>
+              <field name="estimated_hours" />
+              <field name="actual_hours" readonly="1" />
+            </group>
+            <group>
+              <field name="remaining_hours" readonly="1" />
+              <field name="completion_percentage" readonly="1" />
+            </group>
+          </group>
+
+          <notebook>
+            <page string="Work Sessions">
+              <field name="work_session_ids" readonly="1">
+                <list>
+                  <field name="user_id" />
+                  <field name="start_datetime" />
+                  <field name="end_datetime" />
+                  <field name="duration_hours" />
+                  <field name="state" />
+                </list>
+              </field>
+            </page>
+          </notebook>
+
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Sprint Item Kanban View / Scrum Board -->
+  <record id="view_bs_sprint_item_kanban" model="ir.ui.view">
+    <field name="name">bs.sprint.item.kanban</field>
+    <field name="model">bs.sprint.item</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="status" class="o_kanban_small_column">
+        <field name="name" />
+        <field name="sprint_id" />
+        <field name="project_id" />
+        <field name="assigned_user_id" />
+        <field name="estimated_hours" />
+        <field name="actual_hours" />
+        <field name="remaining_hours" />
+        <field name="end_date" />
+        <field name="priority" />
+        <field name="status" />
+
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_global_click o_kanban_card">
+
+              <div class="o_kanban_record_title mb-2">
+                <strong>
+                  <field name="name" />
+                </strong>
+              </div>
+
+              <div class="text-muted mb-1">
+                <span>Project: </span>
+                <field name="project_id" />
+              </div>
+
+              <div class="text-muted mb-1">
+                <span>Assigned: </span>
+                <field name="assigned_user_id" />
+              </div>
+
+              <div class="text-muted mb-1">
+                <span>Hours: </span>
+                <field name="actual_hours" />
+                <span> / </span>
+                <field name="estimated_hours" />
+              </div>
+
+              <div class="text-muted mb-1">
+                <span>Remaining: </span>
+                <field name="remaining_hours" />
+              </div>
+
+              <div class="text-muted mb-1">
+                <span>Due Date: </span>
+                <field name="end_date" />
+              </div>
+
+              <div class="mt-2">
+                <span class="badge text-bg-light">
+                  <field name="priority" />
+                </span>
+              </div>
+
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- Sprint Item Search View -->
+  <record id="view_bs_sprint_item_search" model="ir.ui.view">
+    <field name="name">bs.sprint.item.search</field>
+    <field name="model">bs.sprint.item</field>
+    <field name="arch" type="xml">
+      <search string="Search Sprint Items">
+        <field name="name" />
+        <field name="sprint_id" />
+        <field name="project_id" />
+        <field name="assigned_user_id" />
+        <field name="status" />
+        <field name="priority" />
+
+        <filter name="my_tasks"
+          string="My Tasks"
+          domain="[('assigned_user_id', '=', uid)]" />
+
+        <separator />
+
+        <filter name="group_by_sprint"
+          string="Sprint"
+          context="{'group_by': 'sprint_id'}" />
+
+        <filter name="group_by_status"
+          string="Status"
+          context="{'group_by': 'status'}" />
+
+        <filter name="group_by_user"
+          string="Assigned User"
+          context="{'group_by': 'assigned_user_id'}" />
+      </search>
+    </field>
+  </record>
+
+  <!-- Sprint Item Action -->
+  <record id="action_bs_sprint_item" model="ir.actions.act_window">
+    <field name="name">Sprint Items</field>
+    <field name="res_model">bs.sprint.item</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_bs_sprint_item_search" />
+  </record>
+
+  <!-- Scrum Board Action -->
+  <record id="action_bs_scrum_board" model="ir.actions.act_window">
+    <field name="name">Scrum Board</field>
+    <field name="res_model">bs.sprint.item</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="search_view_id" ref="view_bs_sprint_item_search" />
+    <field name="context">{'group_by': 'status'}</field>
+  </record>
+
+  <!-- My Work Action -->
+  <record id="action_bs_my_work" model="ir.actions.act_window">
+    <field name="name">My Work</field>
+    <field name="res_model">bs.sprint.item</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="search_view_id" ref="view_bs_sprint_item_search" />
+    <field name="domain">[('assigned_user_id', '=', uid), ('status', 'not in', ['done'])]</field>
+    <field name="context">{'group_by': 'status'}</field>
+  </record>
+
+  <!-- Sprint Items Menu -->
+  <menuitem id="menu_bs_sprint_item"
+    name="Sprint Items"
+    parent="menu_bs_sprint_management"
+    action="action_bs_sprint_item"
+    sequence="20" />
+
+  <!-- Scrum Board Menu -->
+  <menuitem id="menu_bs_scrum_board"
+    name="Scrum Board"
+    parent="menu_bs_sprint_management"
+    action="action_bs_scrum_board"
+    sequence="30" />
+
+  <!-- My Work Menu -->
+  <menuitem id="menu_bs_my_work"
+    name="My Work"
+    parent="menu_bs_sprint_management"
+    action="action_bs_my_work"
+    sequence="40" />
+
+</odoo>

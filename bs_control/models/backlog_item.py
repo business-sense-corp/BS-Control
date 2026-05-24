@@ -96,3 +96,23 @@ class BsBacklogItem(models.Model):
         'hr.department',
         string="Department"
     )
+
+    def action_open_move_to_sprint_wizard(self):
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Move To Sprint",
+            "res_model": "bs.move.backlog.to.sprint.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "active_model": self._name,
+                "active_id": self.id,
+                "default_backlog_item_id": self.id,
+                "default_assigned_user_id": self.assigned_user_id.id,
+                "default_estimated_hours": self.estimated_hours,
+                "default_priority": self.priority,
+                "default_end_date": self.due_date,
+            },
+        }
