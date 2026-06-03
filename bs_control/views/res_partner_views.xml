@@ -41,7 +41,7 @@
 
         <!-- Searchable Fields -->
         <field name="x_client_status" string="Client Status" />
-        <field name="x_industry" string="Industry" filter_domain="[('x_industry', 'ilike', self)]" />
+        <field name="x_industry" string="Industry" />
         <field name="x_client_type" string="Client Type" />
 
         <separator />
@@ -90,4 +90,5 @@
 
     </field>
   </record>
+
 </odoo>

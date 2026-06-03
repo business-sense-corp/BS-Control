@@ -12,6 +12,8 @@
         "contacts",
         "project",
         "hr",
+        'account',
+        'hr_timesheet',
     ],
     "data": [
         "security/ir.model.access.csv",
