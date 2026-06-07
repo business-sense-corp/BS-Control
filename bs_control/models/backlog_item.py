@@ -1,4 +1,5 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 
 class BsBacklogItem(models.Model):
@@ -75,20 +76,21 @@ class BsBacklogItem(models.Model):
         ('archived', 'Archived'),
     ], default='backlog', tracking=True)
 
-    created_by = fields.Many2one(
-        'res.users',
-        default=lambda self: self.env.user,
-        readonly=True
-    )
-
-    created_date = fields.Datetime(
-        default=fields.Datetime.now,
-        readonly=True
-    )
+    # الفيلدات دي default في اي موديل علشان كدة مش صح اننا نكررها
+    # created_by = fields.Many2one(
+    #     'res.users',
+    #     default=lambda self: self.env.user,
+    #     readonly=True
+    # )
+    #
+    # created_date = fields.Datetime(
+    #     default=fields.Datetime.now,
+    #     readonly=True
+    # )
 
     due_date = fields.Date()
 
-    definition_of_done = fields.Text()
+    definition_of_done = fields.Text(required=True)
 
     is_billable = fields.Boolean()
 
@@ -96,6 +98,12 @@ class BsBacklogItem(models.Model):
         'hr.department',
         string="Department"
     )
+
+    @api.constrains('due_date','create_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.due_date < rec.create_date.date():
+                raise ValidationError(_('لا يمكنك إنشاء مهمة عمل وموعد تسليمها سابق لموعد بدءها'))
 
     def action_open_move_to_sprint_wizard(self):
         self.ensure_one()

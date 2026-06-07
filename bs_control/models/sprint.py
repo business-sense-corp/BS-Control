@@ -1,4 +1,5 @@
-from odoo import models, fields
+from odoo import models, fields, _, api
+from odoo.exceptions import ValidationError
 
 
 class BSSprint(models.Model):
@@ -40,3 +41,8 @@ class BSSprint(models.Model):
     "sprint_id",
     string="Sprint Items",
     )
+
+    def _check_sprint(self):
+        for rec in self:
+            if rec.status == 'active':
+                raise ValidationError(_('لا يمكنك إضافة مهمات عمل إلى الاسبرينت في هذه الحالة'))

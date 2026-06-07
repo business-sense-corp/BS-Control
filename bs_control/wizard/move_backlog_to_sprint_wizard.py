@@ -116,6 +116,7 @@ class BSMoveBacklogToSprintWizard(models.TransientModel):
             "end_date": self.end_date,
             "status": "todo",
         })
+        sprint_item.sprint_id._check_sprint()
 
         if self.set_backlog_as_planned:
             lifecycle_state = "active_sprint" if self.sprint_id.status == "active" else "planned"

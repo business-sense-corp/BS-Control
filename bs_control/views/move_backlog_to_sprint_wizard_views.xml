@@ -10,7 +10,7 @@
           <group>
             <field name="backlog_item_id" />
             <field name="project_id" />
-            <field name="sprint_id" />
+            <field name="sprint_id" domain="[('status','in',['planning','draft'])]"/>
           </group>
 
           <group string="Assignment">

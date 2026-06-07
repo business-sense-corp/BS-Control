@@ -280,11 +280,11 @@
     action="action_bs_scrum_board"
     sequence="30" />
 
-  <!-- My Work Menu -->
-  <menuitem id="menu_bs_my_work"
-    name="My Work"
-    parent="menu_bs_sprint_management"
-    action="action_bs_my_work"
-    sequence="40" />
+<!--  &lt;!&ndash; My Work Menu &ndash;&gt;-->
+<!--  <menuitem id="menu_bs_my_work"-->
+<!--    name="My Work"-->
+<!--    parent="menu_bs_sprint_management"-->
+<!--    action="action_bs_my_work"-->
+<!--    sequence="40" />-->
 
 </odoo>
