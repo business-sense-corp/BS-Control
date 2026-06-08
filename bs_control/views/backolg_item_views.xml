@@ -82,7 +82,9 @@
 
                         <group>
                             <field name="partner_id" />
-                            <field name="project_id" />
+                            <field name="project_id"
+                                domain="[('partner_id', '=', partner_id), ('partner_id', '!=', False)]"
+                                context="{'default_partner_id': partner_id}" />
                         </group>
 
                         <group>

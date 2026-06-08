@@ -76,18 +76,6 @@ class BsBacklogItem(models.Model):
         ('archived', 'Archived'),
     ], default='backlog', tracking=True)
 
-    # الفيلدات دي default في اي موديل علشان كدة مش صح اننا نكررها
-    # created_by = fields.Many2one(
-    #     'res.users',
-    #     default=lambda self: self.env.user,
-    #     readonly=True
-    # )
-    #
-    # created_date = fields.Datetime(
-    #     default=fields.Datetime.now,
-    #     readonly=True
-    # )
-
     due_date = fields.Date()
 
     definition_of_done = fields.Text(required=True)
@@ -99,11 +87,32 @@ class BsBacklogItem(models.Model):
         string="Department"
     )
 
-    @api.constrains('due_date','create_date')
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        for rec in self:
+            if rec.project_id and rec.project_id.partner_id != rec.partner_id:
+                rec.project_id = False
+
+    @api.constrains('partner_id', 'project_id')
+    def _check_project_customer(self):
+        for rec in self:
+            if rec.project_id and not rec.partner_id:
+                raise ValidationError(_(
+                    'يجب اختيار العميل أولاً قبل اختيار المشروع.'
+                ))
+
+            if rec.partner_id and rec.project_id and rec.project_id.partner_id != rec.partner_id:
+                raise ValidationError(_(
+                    'المشروع المختار لا يتبع نفس العميل المحدد.'
+                ))
+
+    @api.constrains('due_date', 'create_date')
     def _check_dates(self):
         for rec in self:
-            if rec.due_date < rec.create_date.date():
-                raise ValidationError(_('لا يمكنك إنشاء مهمة عمل وموعد تسليمها سابق لموعد بدءها'))
+            if rec.due_date and rec.create_date and rec.due_date < rec.create_date.date():
+                raise ValidationError(_(
+                    'لا يمكنك إنشاء مهمة عمل وموعد تسليمها سابق لموعد بدءها'
+                ))
 
     def action_open_move_to_sprint_wizard(self):
         self.ensure_one()
