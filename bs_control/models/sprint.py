@@ -36,13 +36,36 @@ class BSSprint(models.Model):
         default="draft",
         required=True,
     )
+
     sprint_item_ids = fields.One2many(
-    "bs.sprint.item",
-    "sprint_id",
-    string="Sprint Items",
+        "bs.sprint.item",
+        "sprint_id",
+        string="Sprint Items",
     )
+
+    @api.onchange("start_date", "end_date")
+    def _onchange_sprint_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date and rec.end_date < rec.start_date:
+                rec.end_date = False
+                return {
+                    "warning": {
+                        "title": _("Invalid Sprint Dates"),
+                        "message": _("End Date cannot be earlier than Start Date."),
+                    }
+                }
+
+    @api.constrains("start_date", "end_date")
+    def _check_sprint_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date and rec.end_date < rec.start_date:
+                raise ValidationError(
+                    _("End Date cannot be earlier than Start Date.")
+                )
 
     def _check_sprint(self):
         for rec in self:
-            if rec.status == 'active':
-                raise ValidationError(_('لا يمكنك إضافة مهمات عمل إلى الاسبرينت في هذه الحالة'))
+            if rec.status == "active":
+                raise ValidationError(
+                    _("لا يمكنك إضافة مهمات عمل إلى الاسبرينت في هذه الحالة")
+                )
