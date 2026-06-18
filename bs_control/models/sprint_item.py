@@ -196,6 +196,16 @@ class BSSprintItem(models.Model):
                     _("End Date cannot be earlier than Start Date.")
                 )
 
+    def _activate_sprint_if_needed(self):
+        sprints = self.mapped("sprint_id").filtered(
+            lambda sprint: sprint.status in ["draft", "planning"]
+        )
+
+        if sprints:
+            sprints.write({
+                "status": "active",
+            })
+
     def _get_running_session(self):
         self.ensure_one()
 
@@ -249,6 +259,8 @@ class BSSprintItem(models.Model):
             if item.status in ["todo", "reopened"]:
                 item.status = "in_progress"
 
+            item._activate_sprint_if_needed()
+
         return True
 
     def action_pause_work(self):
@@ -280,6 +292,8 @@ class BSSprintItem(models.Model):
 
             if item.status in ["todo", "reopened"]:
                 item.status = "in_progress"
+
+            item._activate_sprint_if_needed()
 
         return True
 
@@ -362,5 +376,8 @@ class BSSprintItem(models.Model):
                     item.reopen_count += 1
 
             self._sync_backlog_status()
+
+            if vals.get("status") == "in_progress":
+                self._activate_sprint_if_needed()
 
         return result
