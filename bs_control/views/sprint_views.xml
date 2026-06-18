@@ -39,7 +39,9 @@
             </page>
 
             <page string="Sprint Items">
-              <field name="sprint_item_ids" context="{'default_sprint_id': id}">
+              <field name="sprint_item_ids"
+                context="{'default_sprint_id': id}"
+                readonly="status in ['active', 'closed', 'cancelled']">
                 <list editable="bottom">
                   <field name="name" />
                   <field name="backlog_item_id" />

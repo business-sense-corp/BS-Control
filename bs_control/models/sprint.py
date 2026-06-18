@@ -63,6 +63,25 @@ class BSSprint(models.Model):
                     _("End Date cannot be earlier than Start Date.")
                 )
 
+    def _is_locked_for_item_changes(self):
+        self.ensure_one()
+        return self.status in ["active", "closed", "cancelled"]
+
+    def _check_sprint_item_changes_allowed(self):
+        for rec in self:
+            if rec._is_locked_for_item_changes():
+                raise ValidationError(
+                    _(
+                        "You cannot add, remove, or edit Sprint Items because this Sprint has already started."
+                    )
+                )
+
+    def write(self, vals):
+        if "sprint_item_ids" in vals:
+            self._check_sprint_item_changes_allowed()
+
+        return super().write(vals)
+
     def _check_sprint(self):
         for rec in self:
             if rec.status == "active":

@@ -196,6 +196,50 @@ class BSSprintItem(models.Model):
                     _("End Date cannot be earlier than Start Date.")
                 )
 
+    def _get_locked_sprint_statuses(self):
+        return ["active", "closed", "cancelled"]
+
+    def _check_sprint_allows_new_item(self, sprint):
+        if sprint and sprint.status in self._get_locked_sprint_statuses():
+            raise ValidationError(
+                _(
+                    "You cannot add Sprint Items because this Sprint has already started."
+                )
+            )
+
+    def _check_sprint_allows_item_removal(self):
+        for item in self:
+            if item.sprint_id and item.sprint_id.status in item._get_locked_sprint_statuses():
+                raise ValidationError(
+                    _(
+                        "You cannot remove Sprint Items because this Sprint has already started."
+                    )
+                )
+
+    def _check_sprint_allows_item_management_edit(self, vals):
+        locked_management_fields = {
+            "name",
+            "sprint_id",
+            "backlog_item_id",
+            "project_id",
+            "assigned_user_id",
+            "estimated_hours",
+            "priority",
+            "start_date",
+            "end_date",
+        }
+
+        if not locked_management_fields.intersection(vals.keys()):
+            return
+
+        for item in self:
+            if item.sprint_id and item.sprint_id.status in item._get_locked_sprint_statuses():
+                raise ValidationError(
+                    _(
+                        "You cannot edit Sprint Items because this Sprint has already started."
+                    )
+                )
+
     def _activate_sprint_if_needed(self):
         sprints = self.mapped("sprint_id").filtered(
             lambda sprint: sprint.status in ["draft", "planning"]
@@ -354,11 +398,23 @@ class BSSprintItem(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        for vals in vals_list:
+            sprint_id = vals.get("sprint_id")
+            if sprint_id:
+                sprint = self.env["bs.sprint"].browse(sprint_id)
+                self._check_sprint_allows_new_item(sprint)
+
         records = super().create(vals_list)
         records._sync_backlog_status()
         return records
 
     def write(self, vals):
+        self._check_sprint_allows_item_management_edit(vals)
+
+        if "sprint_id" in vals and vals.get("sprint_id"):
+            new_sprint = self.env["bs.sprint"].browse(vals["sprint_id"])
+            self._check_sprint_allows_new_item(new_sprint)
+
         status_changed = "status" in vals
 
         old_status_by_item = {
@@ -381,3 +437,7 @@ class BSSprintItem(models.Model):
                 self._activate_sprint_if_needed()
 
         return result
+
+    def unlink(self):
+        self._check_sprint_allows_item_removal()
+        return super().unlink()
