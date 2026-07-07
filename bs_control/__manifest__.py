@@ -12,20 +12,24 @@
         "contacts",
         "project",
         "hr",
-        'account',
-        'hr_timesheet',
+        "account",
+        "hr_timesheet",
     ],
     "data": [
         "security/ir.model.access.csv",
         "security/security.xml",
+
         "views/res_partner_views.xml",
         "views/project_project_views.xml",
+
         "views/backolg_item_views.xml",
-        'views/sprint_views.xml',
-        'views/sprint_item_views.xml',
-        'views/move_backlog_to_sprint_wizard_views.xml',
-        'views/work_session_views.xml',
         "views/bs_control_menus.xml",
+
+        "views/sprint_views.xml",
+        "views/sprint_item_views.xml",
+        "views/work_session_views.xml",
+
+        "views/move_backlog_to_sprint_wizard_views.xml",
     ],
     "application": True,
     "installable": True,
