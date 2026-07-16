@@ -16,8 +16,8 @@
         "hr_timesheet",
     ],
     "data": [
-        "security/ir.model.access.csv",
         "security/security.xml",
+        "security/ir.model.access.csv",
 
         "views/res_partner_views.xml",
         "views/project_project_views.xml",

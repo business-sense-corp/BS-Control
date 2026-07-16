@@ -175,18 +175,17 @@ class BSSprintItem(models.Model):
     @api.onchange("backlog_item_id")
     def _onchange_backlog_item_id(self):
         for item in self:
-            if item.backlog_item_id:
-                item.name = item.backlog_item_id.display_name
+            if not item.backlog_item_id:
+                continue
 
-                if "project_id" in item.backlog_item_id._fields:
-                    item.project_id = item.backlog_item_id.project_id
+            backlog_item = item.backlog_item_id
 
-                if "priority" in item.backlog_item_id._fields:
-                    backlog_priority = item.backlog_item_id.priority
-                    sprint_priorities = dict(item._fields["priority"].selection)
-
-                    if backlog_priority in sprint_priorities:
-                        item.priority = backlog_priority
+            item.name = backlog_item.name
+            item.project_id = backlog_item.project_id
+            item.assigned_user_id = backlog_item.assigned_user_id
+            item.estimated_hours = backlog_item.estimated_hours
+            item.priority = backlog_item.priority
+            item.end_date = backlog_item.due_date
 
     @api.constrains("start_date", "end_date")
     def _check_dates(self):
@@ -399,13 +398,45 @@ class BSSprintItem(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            backlog_item_id = vals.get("backlog_item_id")
+
+            if backlog_item_id:
+                backlog_item = self.env["bs.backlog.item"].browse(
+                    backlog_item_id
+                ).exists()
+
+                if backlog_item:
+                    if not vals.get("name"):
+                        vals["name"] = backlog_item.name
+
+                    if "project_id" not in vals:
+                        vals["project_id"] = backlog_item.project_id.id
+
+                    if "assigned_user_id" not in vals:
+                        vals["assigned_user_id"] = (
+                            backlog_item.assigned_user_id.id
+                        )
+
+                    if "estimated_hours" not in vals:
+                        vals["estimated_hours"] = (
+                            backlog_item.estimated_hours
+                        )
+
+                    if "priority" not in vals:
+                        vals["priority"] = backlog_item.priority
+
+                    if "end_date" not in vals:
+                        vals["end_date"] = backlog_item.due_date
+
             sprint_id = vals.get("sprint_id")
+
             if sprint_id:
                 sprint = self.env["bs.sprint"].browse(sprint_id)
                 self._check_sprint_allows_new_item(sprint)
 
         records = super().create(vals_list)
         records._sync_backlog_status()
+
         return records
 
     def write(self, vals):
