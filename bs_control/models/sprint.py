@@ -29,7 +29,7 @@ class BSSprint(models.Model):
             ("draft", "Draft"),
             ("planning", "Planning"),
             ("active", "Active"),
-            ("closed", "Closed"),
+            ("closed", "Done"),
             ("cancelled", "Cancelled"),
         ],
         string="Status",
