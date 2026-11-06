@@ -1,6 +1,6 @@
 {
     "name": "BS Control",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "summary": "Business Sense Control Management",
     "description": """
         BS Control module for managing business control information.
