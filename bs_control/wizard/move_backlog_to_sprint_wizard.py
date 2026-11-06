@@ -75,6 +75,7 @@ class BSMoveBacklogToSprintWizard(models.TransientModel):
                 "assigned_user_id": backlog_item.assigned_user_id.id,
                 "estimated_hours": backlog_item.estimated_hours,
                 "priority": backlog_item.priority,
+                "start_date": backlog_item.start_date,
                 "end_date": backlog_item.due_date,
             })
 

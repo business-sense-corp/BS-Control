@@ -67,11 +67,13 @@
                             <field name="name" />
                             <field name="task_type" />
                             <field name="priority" />
+                            <field name="section" />
                         </group>
 
                         <group>
                             <field name="status" />
                             <field name="lifecycle_state" />
+                            <field name="delivery_phase" />
                         </group>
 
                     </group>
@@ -101,11 +103,13 @@
                         <group>
                             <field name="estimated_hours" />
                             <field name="story_points" />
+                            <field name="start_date" />
                         </group>
 
                         <group>
                             <field name="due_date" />
                             <field name="is_billable" />
+                            <field name="sprint_reference" />
                         </group>
 
                     </group>

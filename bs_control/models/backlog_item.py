@@ -41,6 +41,16 @@ class BsBacklogItem(models.Model):
         tracking=True
     )
 
+    section = fields.Char(
+        string="Section",
+        tracking=True,
+    )
+
+    delivery_phase = fields.Char(
+        string="Delivery Phase",
+        tracking=True,
+    )
+
     assigned_user_id = fields.Many2one(
         'res.users',
         string="Assigned User",
@@ -76,9 +86,22 @@ class BsBacklogItem(models.Model):
         ('archived', 'Archived'),
     ], default='backlog', tracking=True)
 
+    start_date = fields.Date(
+        string="Start Date",
+        tracking=True,
+    )
+
     due_date = fields.Date()
 
-    definition_of_done = fields.Text(required=True)
+    sprint_reference = fields.Char(
+        string="Sprint",
+        tracking=True,
+    )
+
+    definition_of_done = fields.Text(
+        required=True,
+        default=lambda self: self._get_default_definition_of_done(),
+    )
 
     is_billable = fields.Boolean()
 
@@ -87,11 +110,22 @@ class BsBacklogItem(models.Model):
         string="Department"
     )
 
+    def _get_default_definition_of_done(self):
+        return _(
+            'تم تنفيذ المهمة والتحقق من اكتمال المخرجات وتوثيق نتيجة التسليم.'
+        )
+
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
         for rec in self:
             if rec.project_id and rec.project_id.partner_id != rec.partner_id:
                 rec.project_id = False
+
+    @api.onchange('project_id')
+    def _onchange_project_id(self):
+        for rec in self:
+            if rec.project_id and not rec.partner_id:
+                rec.partner_id = rec.project_id.partner_id
 
     @api.constrains('partner_id', 'project_id')
     def _check_project_customer(self):
@@ -106,12 +140,37 @@ class BsBacklogItem(models.Model):
                     'المشروع المختار لا يتبع نفس العميل المحدد.'
                 ))
 
-    @api.constrains('due_date', 'create_date')
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            project_id = vals.get('project_id')
+
+            if project_id and not vals.get('partner_id'):
+                project = self.env['project.project'].browse(project_id).exists()
+
+                if project.partner_id:
+                    vals['partner_id'] = project.partner_id.id
+
+            if not vals.get('definition_of_done'):
+                vals['definition_of_done'] = self._get_default_definition_of_done()
+
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if vals.get('project_id') and 'partner_id' not in vals:
+            project = self.env['project.project'].browse(vals['project_id']).exists()
+
+            if project.partner_id:
+                vals['partner_id'] = project.partner_id.id
+
+        return super().write(vals)
+
+    @api.constrains('start_date', 'due_date')
     def _check_dates(self):
         for rec in self:
-            if rec.due_date and rec.create_date and rec.due_date < rec.create_date.date():
+            if rec.start_date and rec.due_date and rec.due_date < rec.start_date:
                 raise ValidationError(_(
-                    'لا يمكنك إنشاء مهمة عمل وموعد تسليمها سابق لموعد بدءها'
+                    'لا يمكن أن يكون تاريخ الاستحقاق سابقاً لتاريخ البداية.'
                 ))
 
     def action_open_move_to_sprint_wizard(self):
@@ -130,6 +189,7 @@ class BsBacklogItem(models.Model):
                 "default_assigned_user_id": self.assigned_user_id.id,
                 "default_estimated_hours": self.estimated_hours,
                 "default_priority": self.priority,
+                "default_start_date": self.start_date,
                 "default_end_date": self.due_date,
             },
         }
